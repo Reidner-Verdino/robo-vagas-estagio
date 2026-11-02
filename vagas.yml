@@ -1,0 +1,39 @@
+name: Vagas de estágio
+
+on:
+  schedule:
+    - cron: "0 16 * * *"   # todo dia às 13:00 (horário de Brasília)
+    - cron: "0 1 * * *"    # todo dia às 22:00 (horário de Brasília)
+  workflow_dispatch:         # permite rodar manualmente pelo botão "Run workflow"
+
+permissions:
+  contents: write
+
+jobs:
+  buscar-vagas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Buscar vagas e enviar e-mail
+        env:
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          EMAIL_SENHA_APP: ${{ secrets.EMAIL_SENHA_APP }}
+          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python vagas_bot.py
+
+      - name: Salvar histórico de vagas já enviadas
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add vagas_vistas.json
+          git diff --staged --quiet || git commit -m "Atualiza vagas já enviadas"
+          git push

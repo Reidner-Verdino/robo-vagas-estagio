@@ -1,0 +1,99 @@
+{
+  "termos_estagio": ["estagio", "estagiari", "intern", "internship"],
+
+  "termos_area": [
+    "ti", "tecnologia", "tecnologia da informacao", "dados", "data",
+    "engenharia de dados", "engenheiro de dados", "data engineer", "data engineering",
+    "ciencia de dados", "cientista de dados", "data science", "analise de dados",
+    "analista de dados", "data analyst", "analytics", "bi", "business intelligence",
+    "desenvolvimento", "desenvolvedor", "developer", "software", "sistemas",
+    "programacao", "python", "sql", "java", "cloud", "devops", "infraestrutura",
+    "redes", "suporte tecnico", "seguranca da informacao", "ciberseguranca",
+    "cybersecurity", "machine learning", "inteligencia artificial", "ia", "ai",
+    "front-end", "frontend", "back-end", "backend", "full stack", "fullstack",
+    "qa", "testes", "computacao", "engenharia de software", "banco de dados"
+  ],
+
+  "termos_excluir": ["telemarketing", "vendas", "vendedor", "vendedora"],
+
+  "termos_ti_amplo": [
+    "ti", "tecnologia da informacao", "analista de tecnologia", "time de tecnologia", "area de tecnologia",
+    "vaga de tecnologia", "vagas de tecnologia", "vagas ti", "vagas de ti", "vagastech", "vagasti",
+    "informatica", "computacao", "sistemas de informacao", "analista de sistemas", "analista de ti",
+    "tecnico de ti", "tecnico de informatica", "dev", "devs", "desenvolvedor", "desenvolvedora",
+    "developer", "programador", "programadora", "programacao", "desenvolvimento de software",
+    "desenvolvimento web", "software", "engenheiro de software", "engenheira de software",
+    "software engineer", "arquiteto de software", "arquiteto de solucoes", "tech lead",
+    "full stack", "fullstack", "front-end", "frontend", "back-end", "backend", "mobile",
+    "android", "ios", "flutter", "react", "react native", "angular", "vue", "node", "nodejs",
+    "javascript", "typescript", "python", "java", "kotlin", "golang", "php", ".net", "dotnet",
+    "c#", "ruby", "de dados", "em dados", "engenharia de dados", "engenheiro de dados", "engenheira de dados",
+    "data engineer", "data engineering", "cientista de dados", "ciencia de dados", "data science",
+    "data scientist", "analista de dados", "data analyst", "analytics", "bi", "business intelligence",
+    "power bi", "tableau", "big data", "etl", "databricks", "spark", "airflow", "sql",
+    "banco de dados", "dba", "machine learning", "inteligencia artificial", "llm", "mlops",
+    "infraestrutura de ti", "analista de infraestrutura", "analista de redes", "tecnico de redes",
+    "redes de computadores", "cloud", "aws", "azure", "gcp", "devops", "sre", "kubernetes",
+    "docker", "linux", "suporte tecnico", "suporte de ti", "suporte n1", "suporte n2",
+    "help desk", "helpdesk", "service desk", "noc", "soc", "seguranca da informacao",
+    "ciberseguranca", "cybersecurity", "pentest", "qa", "quality assurance", "analista de testes",
+    "automacao de testes", "ux", "ui", "ux/ui", "product owner", "product manager", "scrum master",
+    "sap", "erp", "totvs", "protheus", "salesforce", "rpa", "low-code", "governanca de ti"
+  ],
+
+  "termos_sinal_vaga": [
+    "vaga", "vagas", "contratando", "contratamos", "estamos contratando", "hiring", "we're hiring",
+    "oportunidade", "oportunidades", "processo seletivo", "estamos buscando", "procuramos",
+    "buscamos", "recrutando", "candidate-se", "envie seu curriculo", "envie seu cv", "job", "jobs"
+  ],
+
+  "termos_candidato": [
+    "#opentowork", "open to work", "opentowork", "estou em busca", "busco oportunidade",
+    "busco uma oportunidade", "busco recolocacao", "em busca de recolocacao",
+    "em busca de uma oportunidade", "estou disponivel", "procuro oportunidade", "estou procurando"
+  ],
+
+  "gupy_termos": ["estagio dados", "estagio ti", "estagio tecnologia", "estagio desenvolvimento", "estagio software"],
+
+  "google_consultas": [
+    "estágio engenharia de dados",
+    "estágio TI tecnologia",
+    "estágio desenvolvedor software"
+  ],
+  "google_localizacao": "Brazil",
+  "google_dias_maximos": 3,
+  "google_enviar_sem_data": true,
+  "google_vagas_peso": 1,
+
+  "linkedin_buscas": [
+    {
+      "id": "ti_vagas_desenvolvimento",
+      "tipo": "linkedin", "peso": 3,
+      "q": "site:br.linkedin.com/jobs/view (desenvolvedor OR programador OR software OR \"full stack\" OR backend OR frontend OR mobile OR QA OR UX)"
+    },
+    {
+      "id": "ti_vagas_dados_infra",
+      "tipo": "linkedin", "peso": 3,
+      "q": "site:br.linkedin.com/jobs/view (dados OR \"data engineer\" OR BI OR infraestrutura OR suporte OR cloud OR devops OR \"segurança da informação\" OR redes OR SAP)"
+    },
+    {
+      "id": "ti_publicacoes_desenvolvimento_dados",
+      "tipo": "linkedin", "peso": 2,
+      "q": "site:linkedin.com/posts (vaga OR vagas OR contratando OR #vagas) (desenvolvedor OR programador OR software OR dados OR \"data engineer\" OR BI)"
+    },
+    {
+      "id": "ti_publicacoes_infra_suporte",
+      "tipo": "linkedin", "peso": 2,
+      "q": "site:linkedin.com/posts (vaga OR vagas OR contratando OR #vagas) (TI OR infraestrutura OR suporte OR cloud OR devops OR \"segurança da informação\")"
+    }
+  ],
+  "linkedin_periodo": "qdr:w",
+  "linkedin_dias_maximos": 7,
+
+  "serpapi_dia_renovacao": 15,
+  "execucoes_por_dia": 2,
+  "buscas_por_execucao_padrao": 4,
+
+  "dias_maximos": 7,
+  "enviar_email_sem_vagas": false
+}
