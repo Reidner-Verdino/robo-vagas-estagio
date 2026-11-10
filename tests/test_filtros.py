@@ -17,6 +17,7 @@ class TestEstagiosGupyEGoogle(unittest.TestCase):
         for titulo in ["Estágio em Engenharia de Dados", "Estagiário de TI",
                        "Data Engineering Intern", "Estagiária Desenvolvimento Front-end"]:
             self.assertTrue(bot.e_vaga_desejada(titulo), titulo)
+        self.assertTrue(bot.e_vaga_desejada("Estágio de Suporte - Tech Travel"))
 
     def test_rejeita_outras_areas_e_niveis(self):
         for titulo in ["Estágio Administrativo", "Analista de Dados Pleno",
@@ -45,6 +46,23 @@ class TestPublicacoes(unittest.TestCase):
         self.assertTrue(bot.e_publicacao_de_vaga("Estamos contratando Dev Python! Envie seu currículo"))
         self.assertTrue(bot.e_publicacao_de_vaga("#vagas Analista de Dados remoto"))
 
+    def test_publicacao_de_estagio_sem_a_palavra_vaga(self):
+        texto = "Estágio de Suporte - Tech 100% Remoto #SeLiga: cursando Sistemas de Informação"
+        self.assertTrue(bot.e_publicacao_de_vaga(texto))
+        self.assertTrue(bot.e_ti(texto))
+
+    def test_busca_de_recrutadores_favoritos(self):
+        nomes = ["Ana Exemplo", "Bruno Exemplo"]
+        with mock.patch.dict(bot.CONFIG, {"linkedin_recrutadores": nomes}):
+            busca = next(b for b in bot.agenda_de_buscas() if b["id"] == "recrutadores_favoritos")
+        for nome in nomes:
+            self.assertIn(f'"{nome}"', busca["q"])
+
+    def test_sem_recrutadores_nao_cria_busca(self):
+        with mock.patch.dict(bot.CONFIG, {"linkedin_recrutadores": []}):
+            ids = [b["id"] for b in bot.agenda_de_buscas()]
+        self.assertNotIn("recrutadores_favoritos", ids)
+
     def test_ignora_quem_procura_emprego(self):
         self.assertFalse(bot.e_publicacao_de_vaga("Estou em busca de uma vaga como dev #opentowork"))
 
@@ -63,10 +81,44 @@ class TestVagasLinkedIn(unittest.TestCase):
             bot.interpretar_vaga_linkedin("Acme contratando Desenvolvedor Python Júnior em São Paulo, SP | LinkedIn"),
             ("Desenvolvedor Python Júnior", "Acme", "São Paulo, SP"))
 
+    def test_titulo_do_duckduckgo(self):
+        self.assertEqual(
+            bot.interpretar_vaga_linkedin("Data Engineer na empresa EY – São Paulo, SP | LinkedIn Jobs"),
+            ("Data Engineer", "EY", "São Paulo, SP"))
+        self.assertEqual(
+            bot.interpretar_vaga_linkedin("AI Engineer Senior na empresa Hotmart - LinkedIn Jobs"),
+            ("AI Engineer Senior", "Hotmart", ""))
+
+    def test_cargos_de_ia_e_engenharia_em_ingles(self):
+        for cargo in ["AI Engineer Senior", "ML Engineer", "Cloud Engineer", "Senior Data Engineer"]:
+            self.assertTrue(bot.e_ti(cargo), cargo)
+        for cargo in ["Designer Pleno (Mid-level Designer)", "Estágio de Marketing", "Analista de CRM e Growth"]:
+            self.assertFalse(bot.e_ti(cargo), cargo)
+
+    def test_formata_datas(self):
+        self.assertEqual(bot.formatar_data("Oct 29, 2026"), "29/10/2026")
+        self.assertEqual(bot.formatar_data("2026-10-29"), "29/10/2026")
+        self.assertEqual(bot.formatar_data("há 2 dias"), "há 2 dias")
+
     def test_titulo_em_ingles(self):
         self.assertEqual(
             bot.interpretar_vaga_linkedin("Acme hiring Data Engineer in Rio de Janeiro, RJ | LinkedIn"),
             ("Data Engineer", "Acme", "Rio de Janeiro, RJ"))
+
+    def test_consulta_restrita_ao_linkedin(self):
+        params = bot.parametros_linkedin({"id": "x", "site": "br.linkedin.com/jobs/view", "q": "dev"}, "k")
+        self.assertEqual(params["engine"], "duckduckgo")
+        self.assertTrue(params["q"].startswith("site:br.linkedin.com/jobs/view "))
+        self.assertIn("df", params)
+
+    def test_descarta_resultados_de_outros_sites(self):
+        falsa = mock.Mock()
+        falsa.json.return_value = {"organic_results": [
+            {"title": "27 vagas de Desenvolvedor | Glassdoor",
+             "link": "https://www.glassdoor.com.br/Vaga/desenvolvedor-vagas.htm", "snippet": "dev"}]}
+        falsa.raise_for_status.return_value = None
+        with mock.patch.object(bot.requests, "get", return_value=falsa):
+            self.assertEqual(bot.buscar_linkedin({"id": "t", "q": "x"}, "k"), [])
 
     def test_classificacao_e_deduplicacao(self):
         resposta = {"organic_results": [

@@ -8,7 +8,7 @@
     "analista de dados", "data analyst", "analytics", "bi", "business intelligence",
     "desenvolvimento", "desenvolvedor", "developer", "software", "sistemas",
     "programacao", "python", "sql", "java", "cloud", "devops", "infraestrutura",
-    "redes", "suporte tecnico", "seguranca da informacao", "ciberseguranca",
+    "redes", "suporte", "suporte tecnico", "tech", "seguranca da informacao", "ciberseguranca",
     "cybersecurity", "machine learning", "inteligencia artificial", "ia", "ai",
     "front-end", "frontend", "back-end", "backend", "full stack", "fullstack",
     "qa", "testes", "computacao", "engenharia de software", "banco de dados"
@@ -17,7 +17,7 @@
   "termos_excluir": ["telemarketing", "vendas", "vendedor", "vendedora"],
 
   "termos_ti_amplo": [
-    "ti", "tecnologia da informacao", "analista de tecnologia", "time de tecnologia", "area de tecnologia",
+    "ti", "tech", "tecnologia da informacao", "analista de tecnologia", "time de tecnologia", "area de tecnologia",
     "vaga de tecnologia", "vagas de tecnologia", "vagas ti", "vagas de ti", "vagastech", "vagasti",
     "informatica", "computacao", "sistemas de informacao", "analista de sistemas", "analista de ti",
     "tecnico de ti", "tecnico de informatica", "dev", "devs", "desenvolvedor", "desenvolvedora",
@@ -31,20 +31,23 @@
     "data engineer", "data engineering", "cientista de dados", "ciencia de dados", "data science",
     "data scientist", "analista de dados", "data analyst", "analytics", "bi", "business intelligence",
     "power bi", "tableau", "big data", "etl", "databricks", "spark", "airflow", "sql",
-    "banco de dados", "dba", "machine learning", "inteligencia artificial", "llm", "mlops",
+    "banco de dados", "dba", "machine learning", "inteligencia artificial", "llm", "mlops", "ai engineer", "ml engineer",
+    "machine learning engineer", "engenheiro de ia", "engenheiro de machine learning", "genai", "ia generativa",
+    "cloud engineer", "platform engineer", "devops engineer", "security engineer", "backend engineer",
+    "frontend engineer", "site reliability", "it analyst", "it support",
     "infraestrutura de ti", "analista de infraestrutura", "analista de redes", "tecnico de redes",
     "redes de computadores", "cloud", "aws", "azure", "gcp", "devops", "sre", "kubernetes",
     "docker", "linux", "suporte tecnico", "suporte de ti", "suporte n1", "suporte n2",
     "help desk", "helpdesk", "service desk", "noc", "soc", "seguranca da informacao",
     "ciberseguranca", "cybersecurity", "pentest", "qa", "quality assurance", "analista de testes",
-    "automacao de testes", "ux", "ui", "ux/ui", "product owner", "product manager", "scrum master",
+    "automacao de testes", "ux", "ui", "ux/ui", "ux designer", "ui designer", "product designer", "product owner", "product manager", "scrum master",
     "sap", "erp", "totvs", "protheus", "salesforce", "rpa", "low-code", "governanca de ti"
   ],
 
   "termos_sinal_vaga": [
     "vaga", "vagas", "contratando", "contratamos", "estamos contratando", "hiring", "we're hiring",
     "oportunidade", "oportunidades", "processo seletivo", "estamos buscando", "procuramos",
-    "buscamos", "recrutando", "candidate-se", "envie seu curriculo", "envie seu cv", "job", "jobs"
+    "buscamos", "recrutando", "estagio", "estagios", "candidate-se", "envie seu curriculo", "envie seu cv", "job", "jobs"
   ],
 
   "termos_candidato": [
@@ -68,25 +71,35 @@
   "linkedin_buscas": [
     {
       "id": "ti_vagas_desenvolvimento",
-      "tipo": "linkedin", "peso": 3,
-      "q": "site:br.linkedin.com/jobs/view (desenvolvedor OR programador OR software OR \"full stack\" OR backend OR frontend OR mobile OR QA OR UX)"
+      "tipo": "linkedin", "peso": 3, "site": "br.linkedin.com/jobs/view",
+      "q": "(desenvolvedor OR programador OR software OR backend OR frontend)"
     },
     {
       "id": "ti_vagas_dados_infra",
-      "tipo": "linkedin", "peso": 3,
-      "q": "site:br.linkedin.com/jobs/view (dados OR \"data engineer\" OR BI OR infraestrutura OR suporte OR cloud OR devops OR \"segurança da informação\" OR redes OR SAP)"
+      "tipo": "linkedin", "peso": 3, "site": "br.linkedin.com/jobs/view",
+      "q": "(dados OR \"data engineer\" OR infraestrutura OR suporte OR cloud)"
     },
     {
       "id": "ti_publicacoes_desenvolvimento_dados",
-      "tipo": "linkedin", "peso": 2,
-      "q": "site:linkedin.com/posts (vaga OR vagas OR contratando OR #vagas) (desenvolvedor OR programador OR software OR dados OR \"data engineer\" OR BI)"
+      "tipo": "linkedin", "peso": 2, "site": "linkedin.com",
+      "q": "inurl:posts (vaga OR vagas OR estágio OR contratando) (desenvolvedor OR programador OR dados)"
     },
     {
       "id": "ti_publicacoes_infra_suporte",
-      "tipo": "linkedin", "peso": 2,
-      "q": "site:linkedin.com/posts (vaga OR vagas OR contratando OR #vagas) (TI OR infraestrutura OR suporte OR cloud OR devops OR \"segurança da informação\")"
+      "tipo": "linkedin", "peso": 2, "site": "linkedin.com",
+      "q": "inurl:posts (vaga OR vagas OR estágio OR contratando) (TI OR tech OR infraestrutura OR suporte OR cloud)"
+    },
+    {
+      "id": "ti_publicacoes_tech_recruiters",
+      "tipo": "linkedin", "peso": 3, "site": "linkedin.com",
+      "q": "inurl:posts (recruiter OR recrutadora OR recrutador OR talent) (vaga OR contratando) tech"
     }
   ],
+  "linkedin_recrutadores": [],
+  "linkedin_recrutadores_peso": 3,
+  "linkedin_motor": "duckduckgo",
+  "linkedin_regiao_duckduckgo": "br-pt",
+  "linkedin_periodo_duckduckgo": "w",
   "linkedin_periodo": "qdr:w",
   "linkedin_dias_maximos": 7,
 

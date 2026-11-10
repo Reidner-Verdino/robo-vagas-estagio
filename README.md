@@ -15,6 +15,7 @@ Criei este projeto para resolver um problema meu: acompanhar várias plataformas
 
 - **Vagas de TI no LinkedIn, de qualquer área e nível**, encontradas pelas páginas públicas indexadas pelo Google.
 - **Publicações de recrutadores**: identifica posts públicos que anunciam vagas de TI (#vagas, "estamos contratando"...) e descarta os de quem está procurando emprego (#opentowork).
+- **Recrutadores favoritos**: acompanha as publicações públicas de recrutadores escolhidos, todos numa única busca para economizar cota.
 - **Estágios em TI e Dados** na Gupy (API pública do portal) e no Google Vagas, que agrega LinkedIn, Catho, InfoJobs, Indeed e outros.
 - **Gestão automática de cota**: consulta o saldo da SerpApi e distribui as buscas até a renovação do plano, priorizando as de TI.
 - **Filtros por área, nível e data**, com interpretação de datas relativas em português e inglês ("há 2 dias", "3 days ago").
@@ -46,7 +47,7 @@ flowchart LR
 |---|---|
 | Python 3.12 | lógica do robô |
 | Requests | consumo das APIs REST |
-| SerpApi (Google Search e Google Jobs) | LinkedIn e agregação de Catho, InfoJobs e outros |
+| SerpApi (DuckDuckGo e Google Jobs) | LinkedIn e agregação de Catho, InfoJobs e outros |
 | HTML/CSS para e-mail | layout em tabelas com estilos inline, compatível com Gmail |
 | smtplib / MIME | envio pelo Gmail |
 | GitHub Actions | agendamento, execução na nuvem e integração contínua |
@@ -54,11 +55,11 @@ flowchart LR
 
 ## 🧩 Desafios e decisões técnicas
 
-**LinkedIn sem raspagem.** LinkedIn, Catho e InfoJobs bloqueiam acesso automatizado e proíbem raspagem nos termos de uso. Em vez de logar numa conta ou manter um scraper frágil, o robô consulta o índice público do Google (via SerpApi) com operadores como `site:br.linkedin.com/jobs/view` e `site:linkedin.com/posts`, filtrando pelo período recente. A contrapartida é que publicações visíveis só para conexões ficam de fora.
+**LinkedIn sem raspagem.** LinkedIn, Catho e InfoJobs bloqueiam acesso automatizado e proíbem raspagem nos termos de uso. Em vez de logar numa conta ou manter um scraper frágil, o robô consulta buscadores pela SerpApi, restrito a páginas de vagas (`br.linkedin.com/jobs/view`) e de publicações (`linkedin.com/posts`) do período recente. Na primeira versão usei o Google, mas ele ignorava a restrição `site:` em consultas de emprego e devolvia Glassdoor, beBee e outros agregadores, mesmo com o parâmetro `as_sitesearch`. O log de diagnóstico por motivo de descarte mostrou o problema na hora. A solução foi trocar o motor dessas buscas para o DuckDuckGo, que respeita o operador, deixar o motor configurável e validar o domínio de cada resultado no código. A contrapartida da abordagem é que publicações visíveis só para conexões ficam de fora.
 
 **Publicações que parecem vagas, mas não são.** Uma busca por "vaga" também traz posts de candidatos procurando emprego. O robô exige sinais de anúncio ("contratando", "envie seu currículo") e descarta sinais de candidato ("#opentowork", "busco oportunidade"). Termos ambíguos foram tratados com cuidado: "dados" sozinho foi trocado por expressões como "analista de dados", para não confundir com "envie seus dados".
 
-**Orçamento de 250 buscas por mês.** São 7 buscas pagas configuradas e 60 execuções por mês, bem acima da cota gratuita. O robô consulta o saldo na API de conta da SerpApi, calcula quantas buscas cabem por execução até a renovação e escolhe quais rodar com um **round-robin ponderado**: buscas de TI têm peso maior e rodam com mais frequência, e todas rodam ao longo de poucos dias. Se o plano for ampliado, o robô passa a usar o saldo extra automaticamente.
+**Orçamento de 250 buscas por mês.** São 8 buscas pagas configuradas e 60 execuções por mês, bem acima da cota gratuita. O robô consulta o saldo na API de conta da SerpApi, calcula quantas buscas cabem por execução até a renovação e escolhe quais rodar com um **round-robin ponderado**: buscas de TI têm peso maior e rodam com mais frequência, e todas rodam ao longo de poucos dias. Se o plano for ampliado, o robô passa a usar o saldo extra automaticamente.
 
 **Mudança na API da Gupy.** Durante o desenvolvimento, a Gupy desativou o endereço antigo da API, que passou a responder 404. Identifiquei o novo endpoint pelos logs e implementei uma lista de endereços com fallback.
 
@@ -126,6 +127,7 @@ Tudo fica no `config.json`:
 | `termos_sinal_vaga` / `termos_candidato` | o que indica anúncio de vaga ou alguém procurando emprego |
 | `termos_estagio` / `termos_area` / `termos_excluir` | filtros dos estágios (Gupy e Google Vagas) |
 | `linkedin_buscas` | consultas do LinkedIn e seus pesos de prioridade |
+| `linkedin_recrutadores` | nomes de recrutadores cujas publicações devem ser acompanhadas, exatamente como aparecem no LinkedIn (ex.: `["Nome Sobrenome"]`); vazio desativa a busca |
 | `gupy_termos` / `google_consultas` | o que é pesquisado em cada fonte |
 | `linkedin_dias_maximos` / `google_dias_maximos` / `dias_maximos` | idade máxima das vagas por fonte |
 | `serpapi_dia_renovacao` / `execucoes_por_dia` | base do cálculo de cota por execução |

@@ -136,6 +136,22 @@ def data_da_vaga_google(j):
     return "", None
 
 
+MESES_EN = {m: i for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
+
+
+def formatar_data(texto):
+    """'Oct 29, 2026' ou '2026-10-29' -> '29/10/2026'; outros formatos ficam como estão."""
+    t = (texto or "").strip()
+    m = re.match(r"^([A-Za-z]{3})[a-z]*\.? (\d{1,2}), (\d{4})", t)
+    if m and m.group(1).lower() in MESES_EN:
+        return f"{int(m.group(2)):02d}/{MESES_EN[m.group(1).lower()]:02d}/{m.group(3)}"
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", t)
+    if m:
+        return f"{m.group(3)}/{m.group(2)}/{m.group(1)}"
+    return t
+
+
 def resumir(texto, limite=260):
     texto = re.sub(r"\s+", " ", texto or "").strip()
     return texto if len(texto) <= limite else texto[:limite].rsplit(" ", 1)[0] + "…"
@@ -249,6 +265,12 @@ def buscas_disponiveis(api_key, agora):
 def agenda_de_buscas():
     """Todas as buscas pagas com seus pesos (quanto maior, mais frequente)."""
     buscas = [dict(b) for b in CONFIG["linkedin_buscas"]]
+    recrutadores = CONFIG.get("linkedin_recrutadores") or []
+    if recrutadores:
+        nomes = " OR ".join(f'"{n}"' for n in recrutadores)
+        buscas.append({"id": "recrutadores_favoritos", "tipo": "linkedin", "site": "linkedin.com",
+                       "peso": CONFIG.get("linkedin_recrutadores_peso", 3),
+                       "q": f"inurl:posts ({nomes}) (estágio OR estagio OR vaga OR vagas)"})
     for i, consulta in enumerate(CONFIG["google_consultas"]):
         buscas.append({"id": f"google_vagas_{i + 1}", "tipo": "google_vagas",
                        "q": consulta, "peso": CONFIG.get("google_vagas_peso", 1)})
@@ -337,19 +359,23 @@ def buscar_google_vagas(consulta, api_key):
 
 # ================================================================ LinkedIn
 def limpar_titulo_linkedin(titulo):
-    return re.sub(r"\s*[|\-–]\s*LinkedIn\s*$", "", titulo or "", flags=re.I).strip()
+    """Remove sufixos como ' | LinkedIn', ' - LinkedIn Jobs' e ' | LinkedIn Brasil'."""
+    return re.sub(r"\s*[|\-–—]\s*LinkedIn(?:\s+\w+)?\s*$", "", titulo or "", flags=re.I).strip()
 
 
 def interpretar_vaga_linkedin(titulo):
     """'Empresa contratando Cargo em Cidade | LinkedIn' -> (cargo, empresa, local)."""
     t = limpar_titulo_linkedin(titulo)
+    m = re.match(r"^(?P<cargo>.+?) na empresa (?P<emp>.+?)(?:\s+[–—-]\s+(?P<local>.+))?$", t)
+    if m:
+        return m.group("cargo").strip(), m.group("emp").strip(), (m.group("local") or "").strip()
     m = (re.match(r"^(?P<emp>.+?) (?:está )?contratando (?P<cargo>.+) em (?P<local>[^|]+)$", t)
          or re.match(r"^(?P<emp>.+?) (?:is )?hiring (?P<cargo>.+) in (?P<local>[^|]+)$", t)
          or re.match(r"^(?P<emp>.+?) (?:está )?contratando (?P<cargo>.+)$", t)
          or re.match(r"^(?P<emp>.+?) (?:is )?hiring (?P<cargo>.+)$", t))
     if m:
         return m.group("cargo").strip(), m.group("emp").strip(), (m.groupdict().get("local") or "").strip()
-    partes = [p.strip() for p in re.split(r"\s+[-–]\s+", t) if p.strip()]
+    partes = [p.strip() for p in re.split(r"\s+[|\-–—]\s+", t) if p.strip()]
     if len(partes) >= 2:
         return partes[0], partes[1], ""
     return t, "", ""
@@ -367,14 +393,25 @@ def interpretar_publicacao_linkedin(titulo):
     return "", t
 
 
+def parametros_linkedin(busca, api_key):
+    """Monta a consulta no motor configurado. O padrão é o DuckDuckGo, que respeita o
+    operador site:. O Google tende a ignorá-lo em buscas de emprego e devolver agregadores."""
+    site = busca.get("site", "linkedin.com")
+    consulta = f"site:{site} {busca['q']}"
+    motor = busca.get("motor", CONFIG.get("linkedin_motor", "duckduckgo"))
+    if motor == "google":
+        return {"engine": "google", "q": consulta, "as_sitesearch": site.split("/")[0],
+                "google_domain": "google.com.br", "gl": "br", "hl": "pt",
+                "tbs": CONFIG.get("linkedin_periodo", "qdr:w"), "api_key": api_key}
+    return {"engine": "duckduckgo", "q": consulta,
+            "kl": CONFIG.get("linkedin_regiao_duckduckgo", "br-pt"),
+            "df": CONFIG.get("linkedin_periodo_duckduckgo", "w"), "api_key": api_key}
+
+
 def buscar_linkedin(busca, api_key):
     vagas = []
     try:
-        r = requests.get(SERPAPI, params={
-            "engine": "google", "q": busca["q"],
-            "google_domain": "google.com.br", "gl": "br", "hl": "pt",
-            "tbs": CONFIG.get("linkedin_periodo", "qdr:w"), "api_key": api_key,
-        }, timeout=60)
+        r = requests.get(SERPAPI, params=parametros_linkedin(busca, api_key), timeout=60)
         resposta = r.json()
         if resposta.get("error"):
             print(f"[LinkedIn] '{busca['id']}': aviso do SerpApi -> {resposta['error']}")
@@ -384,7 +421,7 @@ def buscar_linkedin(busca, api_key):
         print(f"[LinkedIn] erro em '{busca['id']}': {e}")
         return vagas
 
-    descartadas = antigas = 0
+    descartes, antigas = [], 0
     for res in resultados:
         link = res.get("link", "")
         titulo = res.get("title", "")
@@ -393,12 +430,16 @@ def buscar_linkedin(busca, api_key):
         if idade is not None and idade > CONFIG.get("linkedin_dias_maximos", 7):
             antigas += 1
             continue
-        publicada = res.get("date", "") or "data não informada"
+        publicada = formatar_data(res.get("date", "")) or "data não informada"
 
-        if "/jobs/view/" in link:
+        if "linkedin.com" not in link:
+            descartes.append(("não é do LinkedIn", titulo, link))
+            continue
+        if "/jobs/view" in link:
             cargo, empresa, local = interpretar_vaga_linkedin(titulo)
-            if not e_ti(cargo):
-                descartadas += 1
+            # a consulta já exige termos de TI; aqui o título ou o trecho precisam confirmar
+            if not e_ti(f"{cargo} {trecho}"):
+                descartes.append(("vaga não parece de TI", titulo, link))
                 continue
             vagas.append({"titulo": cargo, "empresa": empresa, "local": local,
                           "fonte": "LinkedIn", "publicada": publicada, "link": link,
@@ -407,8 +448,12 @@ def buscar_linkedin(busca, api_key):
         elif "/posts/" in link or "/feed/update/" in link:
             autor, texto_titulo = interpretar_publicacao_linkedin(titulo)
             texto = f"{texto_titulo} {trecho}"
-            if not (e_publicacao_de_vaga(texto) and e_ti(texto)):
-                descartadas += 1
+            if tem_termo(texto, CONFIG["termos_candidato"]):
+                descartes.append(("candidato procurando vaga", titulo, link))
+                continue
+            # a consulta já exige palavras de anúncio de vaga; aqui basta confirmar que é de TI
+            if not e_ti(texto):
+                descartes.append(("publicação não parece de TI", titulo, link))
                 continue
             vagas.append({"titulo": resumir(texto_titulo, 110) or "Publicação de vaga",
                           "empresa": autor, "local": "", "fonte": "Publicação no LinkedIn",
@@ -416,10 +461,12 @@ def buscar_linkedin(busca, api_key):
                           "resumo": resumir(trecho), "publicacao": True,
                           "chave": normalizar(link.split("?")[0])})
         else:
-            descartadas += 1
+            descartes.append(("endereço não é vaga nem publicação", titulo, link))
 
     print(f"[LinkedIn] '{busca['id']}': {len(resultados)} resultados | "
-          f"aproveitados: {len(vagas)} | fora do perfil: {descartadas} | antigos: {antigas}")
+          f"aproveitados: {len(vagas)} | descartados: {len(descartes)} | antigos: {antigas}")
+    for motivo, titulo, link in descartes[:8]:
+        print(f"    descartado ({motivo}): {titulo[:90]} | {link[:80]}")
     return vagas
 
 
