@@ -1,112 +1,237 @@
 {
-  "termos_estagio": ["estagio", "estagiari", "intern", "internship"],
+  "perfil": {
+    "cidades_presencial": [
+      "Rio de Janeiro", "Mesquita", "Nova Iguacu", "Nilopolis", "Sao Joao de Meriti",
+      "Duque de Caxias", "Belford Roxo", "Queimados"
+    ],
+    "locais_prioritarios": [
+      "centro do rio", "centro do rio de janeiro", "centro rio de janeiro", "centro, rio de janeiro",
+      "centro - rio de janeiro", "rio de janeiro - centro", "rio de janeiro, centro", "centro/rj",
+      "centro rj", "centro, rj", "centro - rj"
+    ],
+    "bonus_local_prioritario": 4,
+    "sites_prioritarios": [
+      "linkedin", "gupy", "catho", "infojobs", "nerdin", "solides", "eureca", "cia de talentos", "ciadetalentos"
+    ],
+    "bonus_site_prioritario": 3,
+    "regioes_exterior_aceitas": [
+      "worldwide", "anywhere", "global", "latam", "latin america", "south america",
+      "americas", "brazil", "brasil"
+    ],
+    "aceitar_nivel_nao_informado": false
+  },
 
-  "termos_area": [
-    "ti", "tecnologia", "tecnologia da informacao", "dados", "data",
-    "engenharia de dados", "engenheiro de dados", "data engineer", "data engineering",
-    "ciencia de dados", "cientista de dados", "data science", "analise de dados",
-    "analista de dados", "data analyst", "analytics", "bi", "business intelligence",
-    "desenvolvimento", "desenvolvedor", "developer", "software", "sistemas",
-    "programacao", "python", "sql", "java", "cloud", "devops", "infraestrutura",
-    "redes", "suporte", "suporte tecnico", "tech", "seguranca da informacao", "ciberseguranca",
-    "cybersecurity", "machine learning", "inteligencia artificial", "ia", "ai",
-    "front-end", "frontend", "back-end", "backend", "full stack", "fullstack",
-    "qa", "testes", "computacao", "engenharia de software", "banco de dados"
+  "trilhas": [
+    {
+      "id": "dados",
+      "nome": "Dados",
+      "curriculo": "Dados",
+      "peso": 30,
+      "aceita_publicacoes": true,
+      "termos_somente_vagas": ["dados"],
+      "termos": [
+        "de dados", "em dados", "analista de bi", "bi", "business intelligence", "power bi",
+        "analytics", "data analyst", "data analytics", "data engineer", "data engineering",
+        "data science", "data scientist", "big data", "etl", "sql", "dba", "machine learning",
+        "inteligencia artificial", "ia generativa", "ai engineer", "ml engineer", "mlops", "llm",
+        "estatistica", "looker", "tableau", "databricks", "spark", "airflow"
+      ]
+    },
+    {
+      "id": "desenvolvimento",
+      "nome": "Desenvolvimento Python e Automação",
+      "curriculo": "Desenvolvimento",
+      "peso": 20,
+      "aceita_publicacoes": true,
+      "termos": [
+        "desenvolvedor", "desenvolvedora", "developer", "dev", "devs", "programador", "programadora",
+        "programacao", "desenvolvimento de software", "desenvolvimento de sistemas",
+        "desenvolvimento web", "software", "engenheiro de software", "engenheira de software",
+        "software engineer", "backend", "back-end", "frontend", "front-end", "full stack",
+        "fullstack", "python", "java", "javascript", "typescript", "react", "node", "nodejs",
+        "php", ".net", "dotnet", "c#", "golang", "kotlin", "flutter", "mobile", "android",
+        "qa", "quality assurance", "testes de software", "automacao de testes", "automacao",
+        "rpa", "devops", "sre", "cloud", "aws", "azure", "gcp", "api", "apis", "low-code",
+        "salesforce", "sap", "totvs", "protheus", "ux/ui", "ux", "ui", "product owner",
+        "scrum master", "analista de sistemas"
+      ]
+    },
+    {
+      "id": "suporte",
+      "nome": "Suporte e Infra N1",
+      "curriculo": "Suporte",
+      "peso": 10,
+      "aceita_publicacoes": true,
+      "termos": [
+        "suporte tecnico", "suporte de ti", "suporte ti", "analista de suporte", "tecnico de suporte",
+        "suporte n1", "suporte nivel 1", "estagio de suporte", "estagio em suporte",
+        "estagiario de suporte", "help desk", "helpdesk", "service desk", "it support",
+        "tecnico de informatica", "infraestrutura de ti", "analista de infraestrutura",
+        "redes de computadores", "analista de redes", "tecnico de redes", "noc", "soc",
+        "seguranca da informacao", "ciberseguranca", "cybersecurity", "linux", "windows server",
+        "sysadmin", "administrador de sistemas", "suporte a usuarios"
+      ]
+    },
+    {
+      "id": "ti_geral",
+      "nome": "TI geral",
+      "curriculo": "Desenvolvimento ou Suporte, conforme a descrição",
+      "peso": 5,
+      "aceita_publicacoes": false,
+      "termos": [
+        "ti", "tech", "tecnologia", "tecnologia da informacao", "informatica", "computacao",
+        "ciencia da computacao", "sistemas de informacao"
+      ]
+    }
   ],
 
-  "termos_excluir": ["telemarketing", "vendas", "vendedor", "vendedora"],
+  "niveis": {
+    "aceitos": ["estagio", "junior"],
+    "estagio": ["estagi*", "intern", "interns", "internship"],
+    "trainee": ["trainee"],
+    "junior": ["junior", "jr", "n1", "nivel 1", "nivel i", "entry level", "entry-level", "graduate"],
+    "excluidos": [
+      "pleno", "pl", "senior", "sr", "especialista", "specialist", "lead", "lider", "tech lead",
+      "coordenador", "coordenadora", "gerente", "manager", "head", "diretor", "diretora",
+      "director", "principal", "staff", "n2", "n3", "nivel 2", "nivel 3", "ii", "iii",
+      "mid-level", "mid level", "aprendiz"
+    ]
+  },
 
-  "termos_ti_amplo": [
-    "ti", "tech", "tecnologia da informacao", "analista de tecnologia", "time de tecnologia", "area de tecnologia",
-    "vaga de tecnologia", "vagas de tecnologia", "vagas ti", "vagas de ti", "vagastech", "vagasti",
-    "informatica", "computacao", "sistemas de informacao", "analista de sistemas", "analista de ti",
-    "tecnico de ti", "tecnico de informatica", "dev", "devs", "desenvolvedor", "desenvolvedora",
-    "developer", "programador", "programadora", "programacao", "desenvolvimento de software",
-    "desenvolvimento web", "software", "engenheiro de software", "engenheira de software",
-    "software engineer", "arquiteto de software", "arquiteto de solucoes", "tech lead",
-    "full stack", "fullstack", "front-end", "frontend", "back-end", "backend", "mobile",
-    "android", "ios", "flutter", "react", "react native", "angular", "vue", "node", "nodejs",
-    "javascript", "typescript", "python", "java", "kotlin", "golang", "php", ".net", "dotnet",
-    "c#", "ruby", "de dados", "em dados", "engenharia de dados", "engenheiro de dados", "engenheira de dados",
-    "data engineer", "data engineering", "cientista de dados", "ciencia de dados", "data science",
-    "data scientist", "analista de dados", "data analyst", "analytics", "bi", "business intelligence",
-    "power bi", "tableau", "big data", "etl", "databricks", "spark", "airflow", "sql",
-    "banco de dados", "dba", "machine learning", "inteligencia artificial", "llm", "mlops", "ai engineer", "ml engineer",
-    "machine learning engineer", "engenheiro de ia", "engenheiro de machine learning", "genai", "ia generativa",
-    "cloud engineer", "platform engineer", "devops engineer", "security engineer", "backend engineer",
-    "frontend engineer", "site reliability", "it analyst", "it support",
-    "infraestrutura de ti", "analista de infraestrutura", "analista de redes", "tecnico de redes",
-    "redes de computadores", "cloud", "aws", "azure", "gcp", "devops", "sre", "kubernetes",
-    "docker", "linux", "suporte tecnico", "suporte de ti", "suporte n1", "suporte n2",
-    "help desk", "helpdesk", "service desk", "noc", "soc", "seguranca da informacao",
-    "ciberseguranca", "cybersecurity", "pentest", "qa", "quality assurance", "analista de testes",
-    "automacao de testes", "ux", "ui", "ux/ui", "ux designer", "ui designer", "product designer", "product owner", "product manager", "scrum master",
-    "sap", "erp", "totvs", "protheus", "salesforce", "rpa", "low-code", "governanca de ti"
+  "termos_excluir": [
+    "telemarketing", "vendas", "vendedor", "vendedora", "automacao industrial",
+    "automacao residencial", "eletricista", "mecanico", "motorista", "enfermagem"
   ],
-
+  "termos_remoto": ["remoto", "remota", "remote", "home office", "anywhere", "worldwide", "qualquer lugar", "teletrabalho"],
+  "termos_hibrido": ["hibrido", "hibrida", "hybrid"],
   "termos_sinal_vaga": [
     "vaga", "vagas", "contratando", "contratamos", "estamos contratando", "hiring", "we're hiring",
     "oportunidade", "oportunidades", "processo seletivo", "estamos buscando", "procuramos",
-    "buscamos", "recrutando", "estagio", "estagios", "candidate-se", "envie seu curriculo", "envie seu cv", "job", "jobs"
+    "buscamos", "recrutando", "candidate-se", "envie seu curriculo", "envie seu cv",
+    "estagio", "estagios", "job", "jobs"
   ],
-
   "termos_candidato": [
     "#opentowork", "open to work", "opentowork", "estou em busca", "busco oportunidade",
     "busco uma oportunidade", "busco recolocacao", "em busca de recolocacao",
     "em busca de uma oportunidade", "estou disponivel", "procuro oportunidade", "estou procurando"
   ],
-
-  "gupy_termos": ["estagio dados", "estagio ti", "estagio tecnologia", "estagio desenvolvimento", "estagio software"],
-
-  "google_consultas": [
-    "estágio engenharia de dados",
-    "estágio TI tecnologia",
-    "estágio desenvolvedor software"
+  "termos_alerta": [
+    "taxa de inscricao", "pagamento antecipado", "pague", "pix", "deposito", "investimento inicial",
+    "curso obrigatorio pago", "application fee", "pay to apply"
   ],
-  "google_localizacao": "Brazil",
-  "google_dias_maximos": 3,
-  "google_enviar_sem_data": true,
-  "google_vagas_peso": 1,
+  "termos_stack": [
+    "python", "sql", "excel", "power bi", "pandas", "numpy", "java", "javascript", "typescript",
+    "react", "node", "aws", "azure", "gcp", "linux", "git", "docker", "api", "etl", "spark",
+    "airflow", "databricks", "tableau", "looker", "c#", ".net", "php", "machine learning",
+    "scrum", "ingles", "english"
+  ],
 
-  "linkedin_buscas": [
-    {
-      "id": "ti_vagas_desenvolvimento",
-      "tipo": "linkedin", "peso": 3, "site": "br.linkedin.com/jobs/view",
-      "q": "(desenvolvedor OR programador OR software OR backend OR frontend)"
+  "fontes": {
+    "gupy": {
+      "ativa": true,
+      "dias_maximos": 7,
+      "paginas_por_termo": 3,
+      "termos": [
+        "estagio dados", "estagio analise de dados", "estagio bi", "estagio desenvolvimento",
+        "estagio python", "estagio ti", "estagio tecnologia", "estagio suporte",
+        "analista de dados junior", "desenvolvedor junior", "suporte n1", "help desk"
+      ]
     },
-    {
-      "id": "ti_vagas_dados_infra",
-      "tipo": "linkedin", "peso": 3, "site": "br.linkedin.com/jobs/view",
-      "q": "(dados OR \"data engineer\" OR infraestrutura OR suporte OR cloud)"
+    "google_vagas": {
+      "ativa": true,
+      "peso": 1,
+      "dias_maximos": 3,
+      "aceitar_sem_data": true,
+      "localizacao": "Brazil",
+      "consultas": [
+        "estágio dados",
+        "estágio desenvolvedor python",
+        "suporte técnico júnior"
+      ]
     },
-    {
-      "id": "ti_publicacoes_desenvolvimento_dados",
-      "tipo": "linkedin", "peso": 2, "site": "linkedin.com",
-      "q": "inurl:posts (vaga OR vagas OR estágio OR contratando) (desenvolvedor OR programador OR dados)"
+    "linkedin": {
+      "ativa": true,
+      "motor": "duckduckgo",
+      "regiao_duckduckgo": "br-pt",
+      "periodo_duckduckgo": "w",
+      "periodo_google": "qdr:w",
+      "dias_maximos": 7,
+      "recrutadores": [],
+      "recrutadores_peso": 2,
+      "buscas": [
+        {
+          "id": "linkedin_dados",
+          "peso": 3,
+          "site": "br.linkedin.com/jobs/view",
+          "q": "(estágio OR júnior OR junior) (dados OR \"data analyst\" OR BI OR \"engenharia de dados\")"
+        },
+        {
+          "id": "linkedin_desenvolvimento",
+          "peso": 3,
+          "site": "br.linkedin.com/jobs/view",
+          "q": "(estágio OR júnior OR junior) (desenvolvedor OR python OR software OR backend OR automação)"
+        },
+        {
+          "id": "linkedin_suporte",
+          "peso": 2,
+          "site": "br.linkedin.com/jobs/view",
+          "q": "(estágio OR júnior OR junior OR N1) (suporte OR \"help desk\" OR \"service desk\")"
+        },
+        {
+          "id": "publicacoes_ti",
+          "peso": 2,
+          "site": "linkedin.com",
+          "q": "inurl:posts (vaga OR vagas OR contratando) (estágio OR júnior) (dados OR python OR desenvolvedor OR suporte)"
+        },
+        {
+          "id": "publicacoes_tech_recruiters",
+          "peso": 1,
+          "site": "linkedin.com",
+          "q": "inurl:posts (recruiter OR recrutadora OR recrutador OR talent) (vaga OR contratando) tech"
+        }
+      ]
     },
-    {
-      "id": "ti_publicacoes_infra_suporte",
-      "tipo": "linkedin", "peso": 2, "site": "linkedin.com",
-      "q": "inurl:posts (vaga OR vagas OR estágio OR contratando) (TI OR tech OR infraestrutura OR suporte OR cloud)"
+    "sites": {
+      "ativa": true,
+      "peso": 1,
+      "dias_maximos": 7,
+      "aceitar_sem_data": true,
+      "regiao_duckduckgo": "br-pt",
+      "periodo_duckduckgo": "w",
+      "lista": [
+        {"id": "catho", "nome": "Catho", "dominio": "catho.com.br",
+         "q": "(estágio OR júnior OR junior) (dados OR TI OR desenvolvedor OR suporte)"},
+        {"id": "infojobs", "nome": "InfoJobs", "dominio": "infojobs.com.br",
+         "q": "(estágio OR júnior OR junior) (dados OR TI OR desenvolvedor OR suporte)"},
+        {"id": "nerdin", "nome": "Nerdin", "dominio": "nerdin.com.br",
+         "q": "(estágio OR júnior OR junior)"},
+        {"id": "solides", "nome": "Sólides", "dominio": "vagas.solides.com.br",
+         "q": "(estágio OR júnior OR junior) (dados OR TI OR desenvolvedor OR suporte)"},
+        {"id": "eureca", "nome": "Eureca", "dominio": "eureca.me",
+         "q": "(estágio OR programa) (tecnologia OR dados OR TI)"},
+        {"id": "cia_de_talentos", "nome": "Cia de Talentos", "dominio": "ciadetalentos.com.br",
+         "q": "(estágio OR programa) (tecnologia OR dados OR TI)"}
+      ]
     },
-    {
-      "id": "ti_publicacoes_tech_recruiters",
-      "tipo": "linkedin", "peso": 3, "site": "linkedin.com",
-      "q": "inurl:posts (recruiter OR recrutadora OR recrutador OR talent) (vaga OR contratando) tech"
+    "remotive": {
+      "ativa": true,
+      "dias_maximos": 14
     }
-  ],
-  "linkedin_recrutadores": [],
-  "linkedin_recrutadores_peso": 3,
-  "linkedin_motor": "duckduckgo",
-  "linkedin_regiao_duckduckgo": "br-pt",
-  "linkedin_periodo_duckduckgo": "w",
-  "linkedin_periodo": "qdr:w",
-  "linkedin_dias_maximos": 7,
+  },
 
-  "serpapi_dia_renovacao": 15,
-  "execucoes_por_dia": 2,
-  "buscas_por_execucao_padrao": 4,
+  "serpapi": {
+    "dia_renovacao": 15,
+    "execucoes_por_dia": 2,
+    "buscas_por_execucao_padrao": 4
+  },
 
-  "dias_maximos": 7,
-  "enviar_email_sem_vagas": false
+  "email": {
+    "max_por_secao": 15,
+    "enviar_sem_vagas": false,
+    "anexar_csv": true
+  },
+
+  "historico": {
+    "dias": 90
+  }
 }

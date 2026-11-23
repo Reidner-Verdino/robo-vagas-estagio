@@ -1,147 +1,115 @@
-# 🎯 Radar de Vagas em TI e Dados
+# REID · Radar de Empregos e Inteligência de Dados
 
 ![Testes](https://github.com/Reidner-Verdino/robo-vagas-estagio/actions/workflows/testes.yml/badge.svg)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-automação-2088FF?logo=githubactions&logoColor=white)
-![Licença](https://img.shields.io/badge/licença-MIT-green)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-agendado-2088FF?logo=githubactions&logoColor=white)
+![Licença](https://img.shields.io/badge/licença-MIT-lightgrey)
 
-Automação em Python que monitora vagas de **TI de todas as áreas** (dados, desenvolvimento, infraestrutura, suporte, segurança, cloud, QA, UX, SAP e outras) e **publicações de recrutadores no LinkedIn**, além de estágios em TI na Gupy e no Google Vagas. O robô filtra o que é relevante e recente, elimina repetições e envia duas vezes por dia um e-mail em tema escuro, organizado por prioridade. Roda inteiramente na nuvem com GitHub Actions, sem servidor e sem custo.
+[English version](README_EN.md)
 
-Criei este projeto para resolver um problema meu: acompanhar várias plataformas todos os dias tomava tempo, e muitos recrutadores anunciam vagas em publicações no LinkedIn, que não aparecem nas buscas de vagas tradicionais.
+O REID é uma automação em Python que procura vagas de primeira oportunidade em tecnologia (estágio e júnior) em 10 fontes, classifica cada uma por **trilha**, **nível** e **modalidade**, indica qual currículo usar e envia um e-mail organizado por prioridade **duas vezes por dia, às 13h e às 22h**. Roda sozinho no GitHub Actions, sem servidor e sem custo.
 
-<p align="center"><img src="docs/preview-email.png" alt="Prévia do e-mail enviado pelo robô" width="560"></p>
+Criei o projeto para trocar horas de busca manual em vários sites por alguns minutos de leitura de um e-mail, e para acompanhar as vagas que recrutadores anunciam apenas em publicações no LinkedIn.
 
-## ✨ Funcionalidades
+<p align="center"><img src="docs/preview-email.png" alt="Prévia do e-mail enviado pelo REID (dados fictícios)" width="520"></p>
 
-- **Vagas de TI no LinkedIn, de qualquer área e nível**, encontradas pelas páginas públicas indexadas pelo Google.
-- **Publicações de recrutadores**: identifica posts públicos que anunciam vagas de TI (#vagas, "estamos contratando"...) e descarta os de quem está procurando emprego (#opentowork).
-- **Recrutadores favoritos**: acompanha as publicações públicas de recrutadores escolhidos, todos numa única busca para economizar cota.
-- **Estágios em TI e Dados** na Gupy (API pública do portal) e no Google Vagas, que agrega LinkedIn, Catho, InfoJobs, Indeed e outros.
-- **Gestão automática de cota**: consulta o saldo da SerpApi e distribui as buscas até a renovação do plano, priorizando as de TI.
-- **Filtros por área, nível e data**, com interpretação de datas relativas em português e inglês ("há 2 dias", "3 days ago").
-- **Sem repetição**: histórico das vagas já enviadas, inclusive entre fontes diferentes.
-- **E-mail em tema escuro**, com cartões, seções por prioridade, trecho das publicações e botão de acesso direto.
-- **Testes automatizados** rodando a cada push.
+## O que o REID faz
 
-## ⚙️ Como funciona
+| Etapa | Como |
+|---|---|
+| Coleta | Gupy (API pública), LinkedIn (vagas e publicações de recrutadores), sites prioritários via buscador (Catho, InfoJobs, Nerdin, Sólides, Eureca e Cia de Talentos), Google Vagas (agrega outros sites) e Remotive (remoto no exterior) |
+| Classificação | Trilha: Dados, Desenvolvimento Python e Automação, Suporte e Infra N1 ou TI geral. Nível: estágio ou júnior. Modalidade: remoto no Brasil, remoto no exterior (Worldwide ou LATAM) ou híbrido e presencial em cidades de fácil acesso do Grande Rio, com prioridade para o Centro |
+| Prioridade | Pontuação por trilha (Dados primeiro), nível, modalidade e recência |
+| Entrega | E-mail minimalista com o currículo indicado em cada seção e uma planilha CSV anexa no formato de controle de candidaturas |
+| Memória | Histórico de vagas já enviadas (nunca repete) e estatística mensal das tecnologias mais pedidas |
+
+Vagas sem "estágio" ou "júnior" no título, trainee, nível pleno ou acima, de outras áreas, presenciais fora da região ou de países que não aceitam candidatos do Brasil são descartadas, e o motivo de cada descarte aparece no log.
+
+## Como funciona
 
 ```mermaid
 flowchart LR
-    A[GitHub Actions<br/>13h e 22h] --> B[vagas_bot.py]
-    B --> C[API da Gupy]
-    B --> Q{Cota SerpApi<br/>disponível}
-    Q --> D[Google Vagas]
+    A[GitHub Actions<br/>13h e 22h] --> T[Testes]
+    T --> B[REID]
+    B --> G[Gupy]
+    B --> R[Remotive]
+    B --> Q{Cota SerpApi}
+    Q --> V[Google Vagas]
     Q --> L[LinkedIn<br/>vagas e publicações]
-    C --> E[Filtros<br/>área · nível · data]
-    D --> E
-    L --> E
-    E --> F{Já enviada?}
-    F -- não --> G[E-mail por prioridade<br/>vagas de TI → estágios → publicações]
-    F -- sim --> H[Descarta]
-    G --> I[(vagas_vistas.json)]
+    Q --> S[Catho, InfoJobs, Nerdin,<br/>Sólides, Eureca, Cia de Talentos]
+    G & R & V & L & S --> C[Classificação<br/>trilha · nível · modalidade]
+    C --> D{Já enviada?}
+    D -- não --> E[E-mail + CSV]
+    D -- sim --> X[Descarta]
+    E --> H[(Histórico)]
 ```
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 | Tecnologia | Uso |
 |---|---|
-| Python 3.12 | lógica do robô |
-| Requests | consumo das APIs REST |
-| SerpApi (DuckDuckGo e Google Jobs) | LinkedIn e agregação de Catho, InfoJobs e outros |
-| HTML/CSS para e-mail | layout em tabelas com estilos inline, compatível com Gmail |
-| smtplib / MIME | envio pelo Gmail |
+| Python 3.12 | todo o robô, organizado em pacote com módulos por responsabilidade |
+| Requests | APIs REST, com novas tentativas em falhas temporárias |
+| SerpApi (DuckDuckGo e Google Jobs) | LinkedIn e agregação de vagas de outros sites |
+| HTML e CSS para e-mail | layout em tabelas com estilos inline, compatível com o Gmail |
+| smtplib e MIME | envio pelo Gmail com anexo CSV |
 | GitHub Actions | agendamento, execução na nuvem e integração contínua |
-| unittest + mock | testes automatizados, incluindo respostas simuladas da API |
+| unittest e mock | 130 testes automatizados, sem acesso à internet |
 
-## 🧩 Desafios e decisões técnicas
+## Decisões técnicas
 
-**LinkedIn sem raspagem.** LinkedIn, Catho e InfoJobs bloqueiam acesso automatizado e proíbem raspagem nos termos de uso. Em vez de logar numa conta ou manter um scraper frágil, o robô consulta buscadores pela SerpApi, restrito a páginas de vagas (`br.linkedin.com/jobs/view`) e de publicações (`linkedin.com/posts`) do período recente. Na primeira versão usei o Google, mas ele ignorava a restrição `site:` em consultas de emprego e devolvia Glassdoor, beBee e outros agregadores, mesmo com o parâmetro `as_sitesearch`. O log de diagnóstico por motivo de descarte mostrou o problema na hora. A solução foi trocar o motor dessas buscas para o DuckDuckGo, que respeita o operador, deixar o motor configurável e validar o domínio de cada resultado no código. A contrapartida da abordagem é que publicações visíveis só para conexões ficam de fora.
+**LinkedIn e sites de vagas sem raspagem.** Os termos de uso do LinkedIn e de vários sites de vagas proíbem robôs. Para o Catho, InfoJobs, Nerdin, Sólides, Eureca e Cia de Talentos, o REID faz o mesmo que no LinkedIn: busca no índice público, restrita ao domínio de cada site, e descarta páginas de listagem. Esses sites e a Gupy também ganham prioridade na ordenação. O REID consulta o índice público de um buscador, restrito a páginas `br.linkedin.com/jobs/view` e `linkedin.com/posts`, e confere no código se cada resultado é mesmo do LinkedIn. O Google ignorava a restrição `site:` em buscas de emprego, então o motor padrão é o DuckDuckGo; o motor é configurável.
 
-**Publicações que parecem vagas, mas não são.** Uma busca por "vaga" também traz posts de candidatos procurando emprego. O robô exige sinais de anúncio ("contratando", "envie seu currículo") e descarta sinais de candidato ("#opentowork", "busco oportunidade"). Termos ambíguos foram tratados com cuidado: "dados" sozinho foi trocado por expressões como "analista de dados", para não confundir com "envie seus dados".
+**Uma única regra de classificação.** Todas as fontes entregam dados brutos e passam pela mesma função, na mesma ordem de regras. Assim, um critério nunca vale em uma fonte e não em outra, e cada descarte tem um motivo registrado.
 
-**Orçamento de 250 buscas por mês.** São 8 buscas pagas configuradas e 60 execuções por mês, bem acima da cota gratuita. O robô consulta o saldo na API de conta da SerpApi, calcula quantas buscas cabem por execução até a renovação e escolhe quais rodar com um **round-robin ponderado**: buscas de TI têm peso maior e rodam com mais frequência, e todas rodam ao longo de poucos dias. Se o plano for ampliado, o robô passa a usar o saldo extra automaticamente.
+**Cota de 250 buscas por mês.** O REID consulta o saldo real da conta, divide pelo número de execuções até a renovação e escolhe as buscas com um round-robin ponderado: as de maior prioridade rodam mais vezes, e todas rodam ao longo de poucos dias.
 
-**Mudança na API da Gupy.** Durante o desenvolvimento, a Gupy desativou o endereço antigo da API, que passou a responder 404. Identifiquei o novo endpoint pelos logs e implementei uma lista de endereços com fallback.
+**Rigidez contra erros.** O `config.json` é validado por completo antes de cada execução. Um histórico corrompido interrompe a execução em vez de ser tratado como vazio, o que reenviaria tudo. O histórico só é salvo depois que o e-mail é enviado. O workflow roda os testes antes do robô e impede duas execuções simultâneas. Uma fonte fora do ar não derruba as outras, e a falha aparece no e-mail e na aba Actions.
 
-**Datas ausentes no Google Vagas.** A maioria dos resultados vinha sem o campo de data estruturado. Adicionei ao log a contagem de descartes por motivo, descobri que a data costumava aparecer só nas etiquetas da vaga e passei a procurá-la ali, aceitando apenas textos que indicam publicação.
+**Mudança de API e dados incompletos.** Quando a Gupy desativou o endereço antigo da API, o log mostrou o erro e o REID passou a usar uma lista de endereços com reserva. Quando o Google Vagas deixou de informar a data no campo próprio, o REID passou a ler a data nas etiquetas da vaga, aceitando só textos que indicam publicação.
 
-**Fuso horário.** O GitHub Actions roda em UTC, o que fazia o e-mail das 22h sair com a data do dia seguinte. Datas e janelas de execução usam o horário de Brasília.
-
-**E-mail em tema escuro.** Clientes de e-mail ignoram boa parte do CSS moderno, então o layout usa tabelas, estilos inline, `bgcolor` e a meta `color-scheme`, para o tema escuro se manter no Gmail.
-
-## 📁 Estrutura
+## Estrutura
 
 ```
-├── .github/workflows/
-│   ├── vagas.yml          # agendamento (13h e 22h, horário de Brasília)
-│   └── testes.yml         # testes a cada push
-├── docs/
-│   └── preview-email.png  # prévia do e-mail (dados fictícios)
-├── tests/
-│   └── test_filtros.py    # testes: filtros, LinkedIn, datas, cota e e-mail
-├── vagas_bot.py           # coleta, filtros, cota, deduplicação e e-mail
-├── config.json            # termos, buscas, pesos e limites
-├── vagas_vistas.json      # histórico de vagas já enviadas
-└── requirements.txt
+├── reid/
+│   ├── principal.py       execução completa e linha de comando
+│   ├── classificacao.py   trilha, nível, modalidade, alertas e pontuação
+│   ├── config.py          validação estrita do config.json
+│   ├── cota.py            distribuição da cota da SerpApi
+│   ├── historico.py       vagas enviadas e estatísticas mensais
+│   ├── relatorio.py       e-mail (HTML e texto), assunto e CSV
+│   ├── envio.py           SMTP do Gmail
+│   ├── rede.py            requisições com novas tentativas
+│   ├── texto.py           normalização, termos e datas
+│   └── fontes/            gupy, linkedin, sites, google_vagas, remotive, serpapi
+├── tests/                 130 testes
+├── docs/                  documentação técnica, guia de carreira e guia de atualização
+├── config.json            termos, trilhas, fontes e limites
+└── .github/workflows/     vagas.yml (agendamento) e testes.yml
 ```
 
-## 🚀 Como usar
-
-### Rodar localmente
+## Como usar
 
 ```bash
 git clone https://github.com/Reidner-Verdino/robo-vagas-estagio.git
 cd robo-vagas-estagio
 pip install -r requirements.txt
-python vagas_bot.py --teste        # mostra as vagas no terminal, sem enviar e-mail
-python -m unittest discover tests  # roda os testes
+python -m unittest discover -s tests        # testes
+python -m reid --validar                    # valida o config.json
+python -m reid --teste --previa previa.html # busca sem enviar e grava o e-mail em HTML
 ```
 
-Sem credenciais configuradas, o robô roda em modo teste automaticamente. A Gupy funciona sem nenhuma chave; LinkedIn e Google Vagas exigem a chave da SerpApi.
+Para receber os e-mails, faça um fork (pode ser privado), cadastre em **Settings → Secrets and variables → Actions** os segredos `EMAIL_REMETENTE`, `EMAIL_SENHA_APP` (senha de app do Gmail), `EMAIL_DESTINO` (opcional) e `SERPAPI_KEY`, ajuste `serpapi.dia_renovacao` no `config.json` e rode **Actions → REID → Run workflow**. Sem as credenciais, o REID roda em modo teste: busca e classifica, mas não envia nem salva nada.
 
-### Rodar na nuvem com envio de e-mail
+## Documentação
 
-1. Faça um fork deste repositório (pode ser privado).
-2. Gere uma [senha de app do Gmail](https://myaccount.google.com/apppasswords) (exige verificação em duas etapas) e uma chave gratuita da [SerpApi](https://serpapi.com).
-3. Em **Settings → Secrets and variables → Actions**, cadastre os segredos:
+- [Documentação técnica](docs/DOCUMENTACAO_TECNICA.md): regras de classificação, referência do `config.json`, log e solução de problemas.
+- [Guia de carreira](docs/GUIA_DE_CARREIRA.md): como o REID entra na rotina de candidaturas, textos para LinkedIn, currículo e Gupy, e preparação para entrevistas.
+- [Como atualizar o GitHub](docs/COMO_ATUALIZAR_O_GITHUB.md): passo a passo para publicar alterações.
+- [Histórico de versões](CHANGELOG.md).
 
-| Segredo | Valor |
-|---|---|
-| `EMAIL_REMETENTE` | Gmail que envia as vagas |
-| `EMAIL_SENHA_APP` | senha de app de 16 letras |
-| `EMAIL_DESTINO` | e-mail que recebe (opcional, padrão é o remetente) |
-| `SERPAPI_KEY` | chave da SerpApi |
+## Autor
 
-4. No `config.json`, ajuste `serpapi_dia_renovacao` para o dia do mês em que sua cota da SerpApi renova.
-5. Na aba **Actions**, abra **Vagas de estágio** e clique em **Run workflow** para testar.
+**Reidner Verdino** · [GitHub](https://github.com/Reidner-Verdino) · [LinkedIn](https://www.linkedin.com/in/reidnervedino)
 
-As credenciais ficam criptografadas nos segredos do GitHub e nunca aparecem no código nem nos logs.
-
-## 🔧 Configuração
-
-Tudo fica no `config.json`:
-
-| Campo | O que controla |
-|---|---|
-| `termos_ti_amplo` | o que conta como TI nas vagas e publicações do LinkedIn |
-| `termos_sinal_vaga` / `termos_candidato` | o que indica anúncio de vaga ou alguém procurando emprego |
-| `termos_estagio` / `termos_area` / `termos_excluir` | filtros dos estágios (Gupy e Google Vagas) |
-| `linkedin_buscas` | consultas do LinkedIn e seus pesos de prioridade |
-| `linkedin_recrutadores` | nomes de recrutadores cujas publicações devem ser acompanhadas, exatamente como aparecem no LinkedIn (ex.: `["Nome Sobrenome"]`); vazio desativa a busca |
-| `gupy_termos` / `google_consultas` | o que é pesquisado em cada fonte |
-| `linkedin_dias_maximos` / `google_dias_maximos` / `dias_maximos` | idade máxima das vagas por fonte |
-| `serpapi_dia_renovacao` / `execucoes_por_dia` | base do cálculo de cota por execução |
-
-Os horários ficam em `.github/workflows/vagas.yml`, no formato cron em UTC (3 horas à frente de Brasília).
-
-## 🗺️ Próximos passos
-
-- Novas fontes (Programathor, Vagas.com, portais de empresas)
-- Envio também pelo Telegram
-- Painel com estatísticas das vagas coletadas (empresas, cidades, tecnologias mais pedidas)
-
-## 👤 Autor
-
-**Reidner Verdino** · [GitHub](https://github.com/Reidner-Verdino)
-
-Licenciado sob a [Licença MIT](LICENSE).
+Licença [MIT](LICENSE). As vagas da Remotive são exibidas com a fonte e o link da própria Remotive, como a API pede.
